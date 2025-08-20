@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <title>Pokemon Finder!</title>
+        <script src = "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    </head>
+
+    <body class = "flex flex-col items-center bg-gradient-to-r from-blue-400 to-green-500 min-h-screen gap-15">
+        <div class = "flex flex-row gap-1 items-center justify-center">
+        <h2 class = "text-6xl font-bold text-red-500">POKEFINDER!</h2>
+        <img src = "pokesvg.svg" class = " w-10 h-11 cursor-pointer animate-spin">
+        </div>
+        <div class = "flex flex-row justify-evenly items-center gap-1">
+            <h3 class = "text-xl font-bold text-purple-600">Enter Pokemon Name: </h3>
+            <input type = "text" id = "pokename" class = "bg-black text-white rounded-md transition duration-400 linear hover:text-black hover:bg-white">
+        </div>
+        <button id = "pokefind" class = " cursor-pointer rounded-xl px-2 py-2 bg-white color-black hover:scale-110 transition duration-400 ease-in">SEARCH</button>
+        <h3 class = "text-2xl font-semibold text-white hover:scale-110 transition duration-200 hover:text-blue-700">POKEMON DETAILS : </h3>
+        <div class = "flex flex-row gap-10 items-center justify-center">
+            <ul class = "bg-white text-black rounded-lg px-1 py-1" id = "pokelist"></ul>
+            <div id = "pokeimg">
+        </div>
+
+        <script>
+            let temp = document.getElementById("pokename")
+            let pokesearcher = document.getElementById("pokefind")
+            pokesearcher.addEventListener("click", () => {
+                fetchpokemondata()
+            })
+            let pokelist = document.getElementById("pokelist")
+            let pimg = document.getElementById("pokeimg")
+
+            function fetchpokemondata() {
+                let txt = temp.value 
+                let url =  `https://pokeapi.co/api/v2/pokemon/${txt}/`
+                fetch(url)
+                    .then(response => {
+                        if(!response.ok)
+                            throw new Error("Pokemon Not Found!")
+                        return response.json()
+                    })
+                    .then(data => {
+                        pokelist.innerHTML = ' '
+                        pimg.innerHTML = ' '
+                        retpokedata(data) //retrieve poke data
+                        console.log("Data successfully retrieved!")
+
+                    })
+                    .catch(error => {
+                        console.log("Pokemon not found!")
+                        pokelist.textContent = 'Pokemon not found! Try again! '
+                        temp.value = ' '
+                        pimg.innerHTML = ' '
+                    })
+            }
+
+            function retpokedata(data) {
+
+                let newval = document.createElement('li')
+                let pokeimg = document.createElement('img')
+                pokeimg.src = `${data.sprites.front_default}`
+                pimg.append(pokeimg)
+                newval.textContent = `Pokemon Name = ${data.name} | Pokemon ID = ${data.id}`
+                
+                pokelist.append(newval)
+                
+                
+            }
+        </script>
+    </body>
+    
+</html>
