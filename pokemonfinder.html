@@ -24,34 +24,32 @@
         <script>
             let temp = document.getElementById("pokename")
             let pokesearcher = document.getElementById("pokefind")
-            pokesearcher.addEventListener("click", () => {
+            pokesearcher.addEventListener("click", async () => {
                 fetchpokemondata()
             })
             let pokelist = document.getElementById("pokelist")
             let pimg = document.getElementById("pokeimg")
 
-            function fetchpokemondata() {
-                let txt = temp.value 
-                let url =  `https://pokeapi.co/api/v2/pokemon/${txt}/`
-                fetch(url)
-                    .then(response => {
-                        if(!response.ok)
-                            throw new Error("Pokemon Not Found!")
-                        return response.json()
-                    })
-                    .then(data => {
-                        pokelist.innerHTML = ' '
-                        pimg.innerHTML = ' '
-                        retpokedata(data) //retrieve poke data
-                        console.log("Data successfully retrieved!")
+            async function fetchpokemondata() {
+                try {
+                    let txt = temp.value 
+                    let url =  `https://pokeapi.co/api/v2/pokemon/${txt}/`
+                    let res = await fetch(url)
+                    if(!res.ok) {
+                        console.log("Error!")
+                        pokelist.innerHTML = 'POKEMON NOT FOUND!'
+                        pimg.innerHTML = ''
 
-                    })
-                    .catch(error => {
-                        console.log("Pokemon not found!")
-                        pokelist.textContent = 'Pokemon not found! Try again! '
-                        temp.value = ' '
-                        pimg.innerHTML = ' '
-                    })
+                    }
+                    let data = await res.json()
+                    pokelist.innerHTML = ' '
+                    pimg.innerHTML = ' '
+                    retpokedata(data)
+                    console.log('data successfully retrieved!')
+                }
+                catch(error) {
+                    console.error(error)
+                }
             }
 
             function retpokedata(data) {
